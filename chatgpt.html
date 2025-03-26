@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive AI Chatbot</title>
+    <style>
+        body {
+            font-family: 'Tahoma', sans-serif;
+            background-color: #fff3e0;
+            margin: 0;
+            padding: 20px;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        .input-area {
+            display: flex;
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ffe0b2;
+            border-left: 5px solid #d84315;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chat with AI</h1>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Type your question...">
+            <button onclick="getAIResponse()">Send</button>
+        </div>
+        <div class="response" id="aiResponse"></div>
+    </div>
+
+    <script>
+        function getAIResponse() {
+            const userInput = document.getElementById('userInput').value;
+            document.getElementById('aiResponse').innerText = "AI Response: " + userInput.split(' ').reverse().join(' ');
+        }
+    </script>
+</body>
+</html>

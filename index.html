@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management and Passcode Input</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("bDKkeR0UwSJkAeCwM"); // Add your public EmailJS key here
+        })();
+    </script>
+    <script src="script.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            text-align: center;
+        }
+
+        .container, .form-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #passcode {
+            font-size: 24px;
+            padding: 10px;
+            width: 120px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            background-color: #fff;
+            color: #333;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .history-table {
+            margin-top: 20px;
+            width: 80%;
+            border-collapse: collapse;
+        }
+
+        .history-table th, .history-table td {
+            border: 1px solid #fff;
+            padding: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Management System</h1>
+    
+    <div class="container" id="keypad-container">
+        <input type="password" id="passcode" readonly>
+        <div class="button-container">
+            <button onclick="appendDigit(1)">1</button>
+            <button onclick="appendDigit(2)">2</button>
+            <button onclick="appendDigit(3)">3</button>
+            <button onclick="appendDigit(4)">4</button>
+            <button onclick="appendDigit(5)">5</button>
+            <button onclick="appendDigit(6)">6</button>
+            <button onclick="appendDigit(7)">7</button>
+            <button onclick="appendDigit(8)">8</button>
+            <button onclick="appendDigit(9)">9</button>
+            <button onclick="eraseDigit()">⌫</button>
+            <button onclick="appendDigit(0)">0</button>
+            <button onclick="clearallDigits()">Clear</button>
+        </div>
+    </div>
+    
+    <div class="form-container" id="userFormContainer">
+        <h2>Enter User Details</h2>
+        <label for="userName">Name:</label>
+        <input type="text" id="userName" name="userName" placeholder="Enter your name">
+        <label for="userEmail">Email:</label>
+        <input type="email" id="userEmail" name="userEmail" placeholder="Enter your email">
+        <button type="submit" onclick="sendEmail()">Save</button>
+    </div>
+
+    <!-- Admin History Section -->
+    <div class="form-container" id="adminHistoryContainer">
+        <h2>Admin History</h2>
+        <table class="history-table" id="historyTable">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- History rows will appear here -->
+            </tbody>
+        </table>
+        <button onclick="toggleBlock()">Block/Unblock User</button>
+    </div>
+
+    <script>
+        const correctPasscode = "402010"; // Admin passcode
+        let enteredDigits = "";
+        const userHistory = [];
+
+        // Add event listener to handle keyboard input
+        document.addEventListener('keydown', function(event) {
+            if (event.key >= '0' && event.key <= '9') {
+                // If a digit key is pressed, append to passcode input
+                appendDigit(event.key);
+            } else if (event.key === 'Backspace') {
+                // Handle backspace key for erasing a digit
+                eraseDigit();
+            } else if (event.key === 'Escape') {
+                // Clear all digits on Escape key
+                clearallDigits();
+            }
+        });
+
+        // Update passcode display
+        function appendDigit(digit) {
+            enteredDigits += digit;
+            displayPasscode();
+            checkPasscode();
+        }
+
+        function displayPasscode() {
+            document.getElementById("passcode").value = "*".repeat(enteredDigits.length);
+        }
+
+        function eraseDigit() {
+            enteredDigits = enteredDigits.slice(0, -1);
+            displayPasscode();
+        }
+
+        function clearallDigits() {
+            enteredDigits = "";
+            displayPasscode();
+        }
+
+        function checkPasscode() {
+            if (enteredDigits === correctPasscode) {
+                document.getElementById("userFormContainer").style.display = "block"; // Show user form
+                document.getElementById("adminHistoryContainer").style.display = "block"; // Show history table
+            }
+        }
+
+        // Function to save and send user details
+        function sendEmail() {
+            const userName = document.getElementById('userName').value.trim();
+            const userEmail = document.getElementById('userEmail').value.trim();
+
+            if (!userName || !userEmail) {
+                alert("Please fill in both fields.");
+                return;
+            }
+
+            const templateParams = {
+                user_name: userName,
+                user_email: userEmail,
+                admin_email: "admin@example.com", // Admin email address
+                to_email: userEmail // The user receives the email at their email address
+            };
+
+            emailjs.send('service_qpztxp8', 'template_epbc4uk', templateParams)
+                .then(() => {
+                    alert("Email Sent Successfully!"); // Show success message
+                    window.location.href = "welcome.html"; // Redirect to welcome.html after successful email send
+                })
+                .catch((error) => {
+                    alert(`Error: ${JSON.stringify(error)}`); // Show error message if sending fails
+                });
+        }
+
+        // Render the history in the table
+        function renderHistory() {
+            const tbody = document.getElementById("historyTable").getElementsByTagName('tbody')[0];
+            tbody.innerHTML = ""; // Clear previous rows
+
+            userHistory.forEach((entry) => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = entry.user_name;
+                row.insertCell(1).textContent = entry.user_email;
+                row.insertCell(2).textContent = entry.action;
+                row.insertCell(3).textContent = entry.date;
+            });
+        }
+
+        // Toggle block/unblock action (for admin)
+        function toggleBlock() {
+            alert("Toggle block/unblock functionality here");
+        }
+    </script>
+</body>
+</html>

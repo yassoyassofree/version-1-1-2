@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insane Chat</title>
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+        }
+        #chat-container {
+            width: 50%;
+            margin: auto;
+            border: 2px solid #fff;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        #message-input {
+            width: 80%;
+            padding: 10px;
+        }
+        #send-btn {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #ff0055;
+            color: #fff;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔥 Welcome to Insane Chat 🔥</h1>
+    <div id="chat-container"></div>
+    <input type="text" id="message-input" placeholder="Type a message...">
+    <button id="send-btn">Send</button>
+
+    <script>
+        const socket = io("http://localhost:3000");
+        const chatContainer = document.getElementById("chat-container");
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-btn");
+
+        sendButton.addEventListener("click", () => {
+            const message = messageInput.value.trim();
+            if (message) {
+                socket.emit("chat message", message);
+                messageInput.value = "";
+            }
+        });
+
+        socket.on("chat message", (msg) => {
+            const msgDiv = document.createElement("div");
+            msgDiv.textContent = msg;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html>

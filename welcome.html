@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to IXL</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            text-align: center;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+            width: 100%;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            cursor: pointer; /* Make the image clickable */
+        }
+
+        .navbar button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            margin-top: 70px; /* Space for navbar */
+        }
+
+        .redirect-button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1e90ff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .redirect-button:hover {
+            background-color: #00bfff;
+            transform: scale(1.05);
+        }
+
+        .redirect-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Hidden file input */
+        #fileInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <h1>Welcome! Please choose what you want!</h1>
+    <button class="redirect-button" onclick="window.location.href='Cheats.html'">Cheats</button>
+    <button class="redirect-button" onclick="window.location.href='unblockers.html'">Unblockers</button>
+    <button class="redirect-button" onclick="window.location.href='sound board.html'">Sound Board</button>
+    <button class="redirect-button" onclick="window.location.href='unavalable.html'">chat</button>
+
+    <script>
+        // Function to toggle settings - currently just an alert
+        function toggleSettings() {
+            alert("Settings functionality to be implemented.");
+        }
+
+        // Function to load the selected profile picture
+        function loadProfilePicture(event) {
+            const profilePicture = document.getElementById('profilePicture');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profilePicture.src = e.target.result; // Load selected picture
+                localStorage.setItem('profilePicture', e.target.result); // Save image in localStorage
+            };
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to load user data from localStorage
+        function loadUserData() {
+            const storedName = localStorage.getItem('userName');
+            const storedPicture = localStorage.getItem('profilePicture');
+
+            // If no user name exists, prompt for a new account name
+            if (!storedName) {
+                const newName = prompt("Welcome, it seems you are a new user! Please enter your name:", "New Account");
+                if (newName) {
+                    localStorage.setItem('userName', newName);
+                    document.getElementById('userNameDisplay').innerText = newName; // Set display name
+                } else {
+                    document.getElementById('userNameDisplay').innerText = "Unnamed User"; // Fallback if no name is provided
+                }
+            } else {
+                // Set user name and profile picture if stored
+                document.getElementById('userNameDisplay').innerText = storedName;
+            }
+
+            if (storedPicture) {
+                document.getElementById('profilePicture').src = storedPicture;
+            }
+        }
+
+        // Call loadUserData when the page loads
+        window.onload = function() {
+            loadUserData(); // Attempt to load user data on page load
+        };
+    </script>
+</body>
+</html>
